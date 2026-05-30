@@ -29,7 +29,7 @@ A powerful, zero-dependency, single-file web application for creating, editing, 
 3. Edit metadata and click **"SAVE CUE"** to download your perfectly formatted Master CUE sheet.
 
 **Option 2: Use Offline**
-1. Download the `CUE_Master.html` file to your computer.
+1. Download the `index.html` file to your computer.
 2. Double-click to open it in any modern web browser (Chrome, Edge, Firefox, Safari) without needing an internet connection.
 
 ---
@@ -58,7 +58,7 @@ A powerful, zero-dependency, single-file web application for creating, editing, 
 3. Отредактируйте теги и нажмите **"СОХРАНИТЬ CUE"**, чтобы получить идеальный файл CUE.
 
 **Вариант 2: Локальное использование (Оффлайн)**
-1. Скачайте файл `CUE_Master.html` на свой компьютер.
+1. Скачайте файл `index.html` и сохраните как `CUE_Master.html` (или как вам нравится) на свой компьютер.
 2. Запускайте его двойным кликом в любом браузере (Chrome, Edge, Firefox, Safari) даже когда нет интернета.
 
 ---
