@@ -24,7 +24,7 @@ A powerful, zero-dependency, single-file web application for creating, editing, 
 ### 🚀 How to Use
 
 **Option 1: Use Online (No download required)**
-1. Click the **[Live Demo](https://[твой-логин].github.io/[название-репозитория]/CUE_Master.html)** link.
+1. Click the **[Live Demo](https://VadimLevo.github.io/CUE-Master-Editor/index.html)** link.
 2. Drag and drop your audio, CUE, or XML files into the drop zone.
 3. Edit metadata and click **"SAVE CUE"** to download your perfectly formatted Master CUE sheet.
 
@@ -53,7 +53,7 @@ A powerful, zero-dependency, single-file web application for creating, editing, 
 ### 🚀 Как использовать
 
 **Вариант 1: Использовать онлайн (Без скачивания)**
-1. Просто перейдите по ссылке на **[Онлайн-версию](https://[твой-логин].github.io/[название-репозитория]/CUE_Master.html)**.
+1. Просто перейдите по ссылке на **[Онлайн-версию](https://VadimLevo.github.io/CUE-Master-Editor/index.html)**.
 2. Перетащите в окно ваши аудиофайлы, кривые CUE или XML-главы.
 3. Отредактируйте теги и нажмите **"СОХРАНИТЬ CUE"**, чтобы получить идеальный файл CUE.
 
