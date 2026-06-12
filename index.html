@@ -2,20 +2,15 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>CUE Master Editor v13</title>
+    <title>CUE Master Editor v17</title>
     <style>
         body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #f4f7f9; margin: 0; padding: 20px; color: #333; }
         .container { max-width: 1150px; margin: 0 auto; background: white; padding: 25px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.08); }
         
         h2 { 
-            margin-top: 0; 
-            color: #2c3e50; 
-            border-bottom: 3px solid #0078d4; 
-            padding-bottom: 15px; 
-            display: flex;
-            align-items: center;
+            margin-top: 0; color: #2c3e50; border-bottom: 3px solid #0078d4; padding-bottom: 15px; display: flex; align-items: center;
         }
-        .version-badge { font-size: 12px; background: #009688; color: white; padding: 4px 8px; border-radius: 12px; vertical-align: middle; margin-left: 15px; letter-spacing: 0.5px; }
+        .version-badge { font-size: 12px; background: #d32f2f; color: white; padding: 4px 8px; border-radius: 12px; vertical-align: middle; margin-left: 15px; letter-spacing: 0.5px; }
         
         .lang-switch {
             margin-left: auto; background: #e1e4e8; border: none; padding: 6px 12px;
@@ -27,10 +22,10 @@
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         .form-group { margin-bottom: 10px; }
         label { display: block; font-weight: 600; font-size: 12px; color: #6c757d; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px; }
-        input[type="text"], input[type="number"] { 
-            width: 100%; padding: 8px 12px; border: 1px solid #ced4da; border-radius: 5px; box-sizing: border-box; font-size: 14px; transition: 0.2s;
+        input[type="text"], input[type="number"], textarea { 
+            width: 100%; padding: 8px 12px; border: 1px solid #ced4da; border-radius: 5px; box-sizing: border-box; font-size: 14px; transition: 0.2s; font-family: 'Segoe UI', Tahoma, sans-serif;
         }
-        input[type="text"]:focus, input[type="number"]:focus { border-color: #0078d4; outline: none; box-shadow: 0 0 0 3px rgba(0,120,212,0.1); }
+        input[type="text"]:focus, input[type="number"]:focus, textarea:focus { border-color: #0078d4; outline: none; box-shadow: 0 0 0 3px rgba(0,120,212,0.1); }
         
         /* Modal Windows */
         .modal-overlay {
@@ -39,7 +34,7 @@
         }
         .modal-content {
             background: white; padding: 25px; border-radius: 10px; width: 450px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2); max-height: 90vh; overflow-y: auto;
         }
         .modal-content h3 { margin-top: 0; color: #2c3e50; border-bottom: 1px solid #eee; padding-bottom: 10px; }
         .radio-group { margin: 15px 0; background: #f8f9fa; padding: 15px; border-radius: 8px; border: 1px solid #e9ecef; }
@@ -66,19 +61,22 @@
         input.table-input { width: 100%; border: 1px solid transparent; background: transparent; padding: 8px; box-sizing: border-box; font-size: 13px; color: #333; }
         input.table-input:focus { border: 1px solid #0078d4; background: white; outline: none; border-radius: 4px; }
         
-        .btn-bar { display: flex; gap: 10px; margin-top: 25px; align-items: center; flex-wrap: wrap;}
+        .btn-bar { display: flex; gap: 8px; margin-top: 25px; align-items: center; flex-wrap: wrap;}
         button { 
-            padding: 8px 14px; border: none; border-radius: 5px; cursor: pointer; font-weight: 600; font-size: 13px; 
+            padding: 8px 12px; border: none; border-radius: 5px; cursor: pointer; font-weight: 600; font-size: 13px; 
             transition: background 0.2s, transform 0.1s; display: inline-flex; align-items: center; justify-content: center; gap: 5px;
         }
         button:active { transform: scale(0.98); }
         
-        .btn-import { background: #28a745; color: white; font-size: 14px; padding: 10px 18px; }
-        .btn-create { background: #17a2b8; color: white; font-size: 14px; padding: 10px 18px; }
-        .btn-split { background: #6f42c1; color: white; font-size: 14px; padding: 10px 18px; }
-        .btn-case { background: #ffc107; color: #212529; font-size: 14px; padding: 10px 18px; }
-        .btn-save { background: #0078d4; color: white; margin-left: auto; font-size: 15px; padding: 12px 24px; box-shadow: 0 4px 6px rgba(0,120,212,0.2); }
-        .btn-clear { background: #6c757d; color: white; font-size: 14px; padding: 10px 18px;}
+        .btn-import { background: #28a745; color: white; }
+        .btn-create { background: #17a2b8; color: white; }
+        .btn-duration { background: #20c997; color: white; }
+        .btn-split { background: #6f42c1; color: white; }
+        .btn-merge { background: #e83e8c; color: white; }
+        .btn-setlist { background: #ff5722; color: white; }
+        .btn-case { background: #ffc107; color: #212529; }
+        .btn-save { background: #0078d4; color: white; margin-left: auto; font-size: 14px; padding: 10px 20px; box-shadow: 0 4px 6px rgba(0,120,212,0.2); }
+        .btn-clear { background: #6c757d; color: white; }
         
         .btn-icon { width: 34px; height: 34px; padding: 0; border-radius: 4px; }
         .btn-apply-perf { background: #0078d4; color: white; font-size: 16px; margin-left: 5px; }
@@ -107,7 +105,7 @@
 <div class="container">
     <h2>
         <span>💿 CUE Master Editor</span>
-        <span class="version-badge">v13 Multi-Format</span>
+        <span class="version-badge">v17 Setlist Edition</span>
         <button class="lang-switch" onclick="toggleLang()" id="btnLang">🇷🇺 RU</button>
     </h2>
 
@@ -140,7 +138,7 @@
         <div class="form-group" style="margin-top: 15px;">
             <label id="lbl_file_glob">ОБЩИЙ АУДИОФАЙЛ (File):</label>
             <div style="display: flex;">
-                <input type="text" id="g_filename" placeholder="Например: Audio.wav">
+                <input type="text" id="g_filename" placeholder="Например: Joined.wav">
                 <button onclick="applyFileToAll()" class="btn-icon btn-apply-perf" id="btn_apply_file" title="Применить ко всем трекам">⮟</button>
             </div>
         </div>
@@ -172,10 +170,32 @@
         <input type="file" id="fileInput" class="hidden-file" multiple accept=".cue,.txt,.xml,.flac,.wav,.mp3,.ape,.m4a,.ogg">
         <button class="btn-import" onclick="document.getElementById('fileInput').click()" id="btn_import">📂 Импорт</button>
         <button class="btn-create" onclick="addManualTrack()" id="btn_create">➕ Пустой</button>
+        <button class="btn-duration" onclick="openDurationModal()" id="btn_duration">⏱ Тайминги</button>
         <button class="btn-split" onclick="openSplitModal()" id="btn_split">✂️ Нарезать</button>
+        <button class="btn-merge" onclick="mergeTracksToSingleFile()" id="btn_merge" title="Рассчитать индексы для единого файла">🔗 Склеить</button>
+        
+        <button class="btn-setlist" onclick="openSetlistModal()" id="btn_setlist">📝 Сетлист</button>
+        
         <button class="btn-case" onclick="openCaseModal()" id="btn_case">🔠 Регистр</button>
         <button class="btn-clear" onclick="clearAll()" id="btn_clear">🗑 Очистить</button>
-        <button class="btn-save" onclick="saveCUE()" id="btn_save">💾 СОХРАНИТЬ CUE</button>
+        <button class="btn-save" onclick="saveCUE()" id="btn_save">💾 СОХРАНИТЬ</button>
+    </div>
+</div>
+
+<div id="setlistModal" class="modal-overlay">
+    <div class="modal-content" style="width: 500px;">
+        <h3 id="set_mod_title">Вставка сетлиста</h3>
+        <div class="form-group">
+            <label id="set_lbl_desc">Вставьте список названий треков (по одному на строку):</label>
+            <textarea id="set_text" rows="10"></textarea>
+            <p style="font-size: 11px; color: #888; margin-top: 5px; line-height: 1.3;" id="set_hint">
+                Программа автоматически отбросит нумерацию в начале строк (например, "01.", "1 - ", "1)") и заменит названия существующих треков в таблице по порядку.
+            </p>
+        </div>
+        <div class="modal-actions">
+            <button class="btn-clear" onclick="closeSetlistModal()" id="set_btn_cancel">Отмена</button>
+            <button class="btn-save" onclick="applySetlist()" id="set_btn_apply">Применить к таблице</button>
+        </div>
     </div>
 </div>
 
@@ -207,6 +227,33 @@
     </div>
 </div>
 
+<div id="durationModal" class="modal-overlay">
+    <div class="modal-content" style="width: 500px;">
+        <h3 id="dur_mod_title">Создание треков по длительности</h3>
+        <div class="grid-2">
+            <div class="form-group">
+                <label id="dur_lbl_file">Аудиофайл:</label>
+                <input type="text" id="dur_file" value="Audio.wav">
+            </div>
+            <div class="form-group">
+                <label id="dur_lbl_offset">Начало (смещение):</label>
+                <input type="text" id="dur_offset" value="00:00:00" placeholder="00:00:00">
+            </div>
+        </div>
+        <div class="form-group" style="margin-top: 15px;">
+            <label id="dur_lbl_desc">Вставьте список (MM:SS Название):</label>
+            <textarea id="dur_text" rows="8"></textarea>
+            <p style="font-size: 11px; color: #888; margin-top: 5px; line-height: 1.3;" id="dur_hint">
+                Программа найдет время в каждой строке, переведет его в абсолютные индексы с нарастающим итогом и извлечет названия.
+            </p>
+        </div>
+        <div class="modal-actions">
+            <button class="btn-clear" onclick="closeDurationModal()" id="dur_btn_cancel">Отмена</button>
+            <button class="btn-save" onclick="applyDurations()" id="dur_btn_apply">Сгенерировать</button>
+        </div>
+    </div>
+</div>
+
 <div id="caseModal" class="modal-overlay">
     <div class="modal-content" style="width: 400px;">
         <h3 id="case_mod_title">Регистр названий треков</h3>
@@ -228,28 +275,36 @@
     // --- СЛОВАРЬ ПЕРЕВОДОВ ---
     const dict = {
         ru: {
-            lbl_perf: "ИСПОЛНИТЕЛЬ АЛЬБОМА (Performer):", lbl_genre: "ЖАНР (Genre):", lbl_title: "НАЗВАНИЕ АЛЬБОМА (Title):", lbl_date: "ГОД (Date):",
-            lbl_file_glob: "ОБЩИЙ АУДИОФАЙЛ (File):", 
+            lbl_perf: "ИСПОЛНИТЕЛЬ АЛЬБОМА (Performer):", lbl_genre: "ЖАНР (Genre):", lbl_title: "НАЗВАНИЕ АЛЬБОМА (Title):", lbl_date: "ГОД (Date):", lbl_file_glob: "ОБЩИЙ АУДИОФАЙЛ (File):", 
             th_file: "Имя файла (File)", th_title: "Название трека (Title)", th_perf: "Исполнитель (Performer)", th_idx: "Индекс", th_act: "Действия",
             txt_empty_title: "Перетащите файлы сюда", txt_empty_sub: "CUE, TXT, XML, FLAC, WAV, MP3",
-            btn_import: "📂 Импорт", btn_create: "➕ Пустой", btn_split: "✂️ Нарезать", btn_case: "🔠 Регистр", btn_clear: "🗑 Очистить", btn_save: "💾 СОХРАНИТЬ CUE",
+            btn_import: "📂 Импорт", btn_create: "➕ Пустой", btn_duration: "⏱ Тайминги", btn_split: "✂️ Нарезать", btn_merge: "🔗 Склеить", btn_setlist: "📝 Сетлист", btn_case: "🔠 Регистр", btn_clear: "🗑 Очистить", btn_save: "💾 СОХРАНИТЬ",
             ph_perf: "Исполнитель", new_track: "Новый трек", ins_track: "Вставленный трек", alert_empty: "Добавьте хотя бы один трек!", confirm_clear: "Очистить весь список?",
-            title_up: "Вверх", title_down: "Вниз", title_ins: "Вставить после", title_del: "Удалить",
-            btn_apply_perf: "Применить ко всем трекам", btn_apply_file: "Применить ко всем трекам",
+            title_up: "Вверх", title_down: "Вниз", title_ins: "Вставить после", title_del: "Удалить", btn_apply_perf: "Применить ко всем трекам", btn_apply_file: "Применить ко всем трекам",
+            
+            set_mod_title: "Вставка сетлиста", set_lbl_desc: "Вставьте список названий треков (по одному на строку):", set_hint: "Программа автоматически отбросит нумерацию в начале строк (например, '01.', '1 - ', '1)') и заменит названия существующих треков в таблице по порядку.", set_btn_cancel: "Отмена", set_btn_apply: "Применить к таблице",
+
             mod_title: "Автоматическая нарезка", mod_lbl_file: "Имя аудиофайла (File):", mod_lbl_total: "Общая длительность (MM:SS):", mod_rad_parts: "Разбить на равные части (шт):", mod_rad_time: "Каждые (MM:SS):", mod_btn_cancel: "Отмена", mod_btn_apply: "Создать треки", alert_duration: "Укажите корректную длительность (например, 60:00)", track_prefix: "Часть",
-            case_mod_title: "Регистр названий треков", case_desc: "Изменить регистр у всех названий в таблице:", case_title: "Каждое Слово С Заглавной", case_smart: "Каждое Слово С Заглавной (кроме слов-связок)", case_sentence: "Первое слово с заглавной", case_upper: "ВСЕ ЗАГЛАВНЫЕ", case_lower: "все строчные", case_btn_close: "Отмена"
+            case_mod_title: "Регистр названий треков", case_desc: "Изменить регистр у всех названий в таблице:", case_title: "Каждое Слово С Заглавной", case_smart: "Каждое Слово С Заглавной (кроме слов-связок)", case_sentence: "Первое слово с заглавной", case_upper: "ВСЕ ЗАГЛАВНЫЕ", case_lower: "все строчные", case_btn_close: "Отмена",
+            
+            dur_mod_title: "Создание треков по длительности", dur_lbl_file: "Аудиофайл:", dur_lbl_offset: "Начало (смещение):", dur_lbl_desc: "Вставьте список (MM:SS Название):", dur_hint: "Программа найдет время в каждой строке, переведет его в абсолютные индексы с нарастающим итогом и извлечет названия.", dur_btn_cancel: "Отмена", dur_btn_apply: "Сгенерировать", alert_no_durations: "Не найдено ни одной корректной длительности.",
+            alert_merge_warn: "Внимание: некоторые аудиофайлы не имеют точной длительности (возможно, добавлены из текста). Рассчет может быть неточным."
         },
         en: {
-            lbl_perf: "ALBUM PERFORMER:", lbl_genre: "GENRE:", lbl_title: "ALBUM TITLE:", lbl_date: "YEAR (Date):",
-            lbl_file_glob: "GLOBAL AUDIO FILE:",
+            lbl_perf: "ALBUM PERFORMER:", lbl_genre: "GENRE:", lbl_title: "ALBUM TITLE:", lbl_date: "YEAR (Date):", lbl_file_glob: "GLOBAL AUDIO FILE:",
             th_file: "File Name", th_title: "Track Title", th_perf: "Performer", th_idx: "Index", th_act: "Actions",
             txt_empty_title: "Drop files here", txt_empty_sub: "CUE, TXT, XML, FLAC, WAV, MP3",
-            btn_import: "📂 Import", btn_create: "➕ Empty", btn_split: "✂️ Split", btn_case: "🔠 Case", btn_clear: "🗑 Clear", btn_save: "💾 SAVE CUE",
+            btn_import: "📂 Import", btn_create: "➕ Empty", btn_duration: "⏱ Timings", btn_split: "✂️ Split", btn_merge: "🔗 Merge", btn_setlist: "📝 Setlist", btn_case: "🔠 Case", btn_clear: "🗑 Clear", btn_save: "💾 SAVE CUE",
             ph_perf: "Performer", new_track: "New Track", ins_track: "Inserted Track", alert_empty: "Add at least one track!", confirm_clear: "Clear the entire list?",
-            title_up: "Move Up", title_down: "Move Down", title_ins: "Insert After", title_del: "Delete",
-            btn_apply_perf: "Apply to all tracks", btn_apply_file: "Apply to all tracks",
+            title_up: "Move Up", title_down: "Move Down", title_ins: "Insert After", title_del: "Delete", btn_apply_perf: "Apply to all tracks", btn_apply_file: "Apply to all tracks",
+            
+            set_mod_title: "Paste Setlist", set_lbl_desc: "Paste your tracklist here (one track per line):", set_hint: "The app will automatically strip leading numbers and punctuation (e.g., '01.', '1 - ', '1)') and replace the titles of existing tracks in order.", set_btn_cancel: "Cancel", set_btn_apply: "Apply to Table",
+
             mod_title: "Auto-Split Generator", mod_lbl_file: "Audio File Name:", mod_lbl_total: "Total Duration (MM:SS):", mod_rad_parts: "Divide into equal parts (qty):", mod_rad_time: "Split every (MM:SS):", mod_btn_cancel: "Cancel", mod_btn_apply: "Generate Tracks", alert_duration: "Please enter a valid duration (e.g., 60:00)", track_prefix: "Part",
-            case_mod_title: "Track Title Case", case_desc: "Change case for all titles in the list:", case_title: "Title Case", case_smart: "Title Case (Except Stop Words)", case_sentence: "Sentence case", case_upper: "UPPERCASE", case_lower: "lowercase", case_btn_close: "Cancel"
+            case_mod_title: "Track Title Case", case_desc: "Change case for all titles in the list:", case_title: "Title Case", case_smart: "Title Case (Except Stop Words)", case_sentence: "Sentence case", case_upper: "UPPERCASE", case_lower: "lowercase", case_btn_close: "Cancel",
+            
+            dur_mod_title: "Generate Tracks by Duration", dur_lbl_file: "Audio File:", dur_lbl_offset: "Start Offset:", dur_lbl_desc: "Paste your list (MM:SS Title):", dur_hint: "The app will parse the time in each line, calculate cumulative absolute indexes, and extract track titles automatically.", dur_btn_cancel: "Cancel", dur_btn_apply: "Generate", alert_no_durations: "No valid durations found in text.",
+            alert_merge_warn: "Warning: Some tracks don't have an exact audio duration (likely added manually or from text). The calculation might be incomplete."
         }
     };
 
@@ -262,13 +317,18 @@
         
         const staticIds = [
             'lbl_perf', 'lbl_genre', 'lbl_title', 'lbl_date', 'lbl_file_glob', 'th_file', 'th_title', 'th_perf', 'th_idx', 'th_act',
-            'txt_empty_title', 'txt_empty_sub', 'btn_import', 'btn_create', 'btn_split', 'btn_case', 'btn_clear', 'btn_save',
+            'txt_empty_title', 'txt_empty_sub', 'btn_import', 'btn_create', 'btn_duration', 'btn_split', 'btn_merge', 'btn_setlist', 'btn_case', 'btn_clear', 'btn_save',
             'mod_title', 'mod_lbl_file', 'mod_lbl_total', 'mod_rad_parts', 'mod_rad_time', 'mod_btn_cancel', 'mod_btn_apply',
-            'case_mod_title', 'case_desc', 'case_title', 'case_smart', 'case_sentence', 'case_upper', 'case_lower', 'case_btn_close'
+            'case_mod_title', 'case_desc', 'case_title', 'case_smart', 'case_sentence', 'case_upper', 'case_lower', 'case_btn_close',
+            'dur_mod_title', 'dur_lbl_file', 'dur_lbl_offset', 'dur_lbl_desc', 'dur_hint', 'dur_btn_cancel', 'dur_btn_apply',
+            'set_mod_title', 'set_lbl_desc', 'set_hint', 'set_btn_cancel', 'set_btn_apply'
         ];
         staticIds.forEach(id => { const el = document.getElementById(id); if (el) el.innerText = t(id); });
         document.getElementById('btn_apply_perf').title = t('btn_apply_perf');
         document.getElementById('btn_apply_file').title = t('btn_apply_file');
+        
+        document.getElementById('dur_text').placeholder = currentLang === 'ru' ? "03:45 Песня 1\n04:12 Песня 2" : "03:45 Song 1\n04:12 Song 2";
+        document.getElementById('set_text').placeholder = currentLang === 'ru' ? "01. Terrible Lie\n02. Sin\n03. March of the Pigs" : "01 - Sultans of Swing\n02 - Eastbound Train\n03 - Down to the Waterline";
         renderTable();
     }
 
@@ -281,34 +341,33 @@
     dropZone.addEventListener('dragover', () => dropZone.classList.add('dragover'));
     dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
     dropZone.addEventListener('drop', (e) => { dropZone.classList.remove('dragover'); handleFiles(e.dataTransfer.files); });
-
     document.getElementById('fileInput').addEventListener('change', function(e) { handleFiles(this.files); this.value = ''; });
+
+    function getAudioDuration(file) {
+        return new Promise((resolve) => {
+            const url = URL.createObjectURL(file);
+            const audio = new Audio(url);
+            audio.addEventListener('loadedmetadata', () => { const dur = audio.duration; URL.revokeObjectURL(url); resolve(dur); });
+            audio.addEventListener('error', () => resolve(0));
+        });
+    }
 
     async function handleFiles(files) {
         const fileArray = Array.from(files).sort((a, b) => a.name.localeCompare(b.name, undefined, {numeric: true, sensitivity: 'base'}));
         for (let file of fileArray) {
             const ext = file.name.split('.').pop().toLowerCase();
             if (['cue', 'txt'].includes(ext)) {
-                const text = await readAutoEncoded(file);
-                parseCue(text);
-            } 
-            else if (ext === 'xml') {
-                const text = await readAutoEncoded(file);
-                parseXMLChapters(text, file.name.replace(/\.xml$/i, '.wav'));
-            }
-            else if (['flac', 'wav', 'mp3', 'ape', 'm4a', 'ogg'].includes(ext)) {
-                const url = URL.createObjectURL(file);
-                const audio = new Audio(url);
-                audio.addEventListener('loadedmetadata', function() {
-                    const totalSec = Math.round(audio.duration);
-                    if (!isNaN(totalSec) && totalSec > 0) {
-                        lastAutoDuration = String(Math.floor(totalSec/60)).padStart(2,'0') + ':' + String(totalSec%60).padStart(2,'0');
-                        document.getElementById('split_total').value = lastAutoDuration;
-                        document.getElementById('split_file').value = file.name;
-                    }
-                    URL.revokeObjectURL(url);
-                });
-                tracks.push({ filename: file.name, title: file.name.replace(/\.[^/.]+$/, ""), performer: "", index: "00:00:00" });
+                const text = await readAutoEncoded(file); parseCue(text);
+            } else if (ext === 'xml') {
+                const text = await readAutoEncoded(file); parseXMLChapters(text, file.name.replace(/\.xml$/i, '.wav'));
+            } else if (['flac', 'wav', 'mp3', 'ape', 'm4a', 'ogg'].includes(ext)) {
+                const durSec = await getAudioDuration(file);
+                if (durSec > 0) {
+                    lastAutoDuration = String(Math.floor(durSec/60)).padStart(2,'0') + ':' + String(Math.floor(durSec%60)).padStart(2,'0');
+                    document.getElementById('split_total').value = lastAutoDuration;
+                    document.getElementById('split_file').value = file.name;
+                }
+                tracks.push({ filename: file.name, title: file.name.replace(/\.[^/.]+$/, ""), performer: "", index: "00:00:00", durationSec: durSec });
             }
         }
         renderTable();
@@ -320,57 +379,41 @@
         catch(e) { return new TextDecoder("windows-1251").decode(buffer); }
     }
 
-    // --- ПАРСИНГ XML ГЛАВ ---
+    // --- ПАРСИНГ CUE / XML ---
     function parseXMLChapters(text, defaultFilename) {
         const parser = new DOMParser();
         const xmlDoc = parser.parseFromString(text, "text/xml");
         const atoms = xmlDoc.getElementsByTagName("ChapterAtom");
-
         if(atoms.length === 0) return; 
+        
         if(tracks.length === 1 && tracks[0].index === "00:00:00" && tracks[0].title === t('new_track')) { tracks = []; }
-
-        // Умная подстановка имени файла (приоритет у глобального поля)
         let globalFile = document.getElementById('g_filename').value.trim();
         const fallbackFile = globalFile ? globalFile : (tracks.length > 0 ? tracks[tracks.length-1].filename : defaultFilename);
 
         for(let i = 0; i < atoms.length; i++) {
-            const atom = atoms[i];
-            let timeStart = "00:00:00.000";
-            let title = `Chapter ${i+1}`;
-
-            const timeNode = atom.getElementsByTagName("ChapterTimeStart")[0];
+            let timeStart = "00:00:00.000", title = `Chapter ${i+1}`;
+            const timeNode = atoms[i].getElementsByTagName("ChapterTimeStart")[0];
             if(timeNode) timeStart = timeNode.textContent.trim();
-
-            const stringNode = atom.getElementsByTagName("ChapterString")[0];
+            const stringNode = atoms[i].getElementsByTagName("ChapterString")[0];
             if(stringNode) title = stringNode.textContent.trim();
 
             let cueTime = "00:00:00";
             const timeMatch = timeStart.match(/(\d+):(\d+):(\d+)\.?(\d*)/);
-            
             if(timeMatch) {
-                let h = parseInt(timeMatch[1]) || 0;
-                let m = parseInt(timeMatch[2]) || 0;
-                let s = parseInt(timeMatch[3]) || 0;
-                let fracStr = timeMatch[4] || "0";
-                
-                let totalMin = (h * 60) + m;
-                let frames = Math.round(parseFloat("0." + fracStr) * 75);
-                
+                let h = parseInt(timeMatch[1]) || 0, m = parseInt(timeMatch[2]) || 0, s = parseInt(timeMatch[3]) || 0;
+                let frames = Math.round(parseFloat("0." + (timeMatch[4] || "0")) * 75);
                 if(frames >= 75) { frames = 0; s++; }
-                if(s >= 60) { s -= 60; totalMin++; }
-
+                let totalMin = (h * 60) + m + Math.floor(s/60);
+                s = s % 60;
                 cueTime = String(totalMin).padStart(2,'0') + ':' + String(s).padStart(2,'0') + ':' + String(frames).padStart(2,'0');
             }
-
-            tracks.push({ filename: fallbackFile, title: title, performer: "", index: cueTime });
+            tracks.push({ filename: fallbackFile, title: title, performer: "", index: cueTime, durationSec: 0 });
         }
     }
 
-    // --- ПАРСИНГ CUE ---
     function parseCue(text) {
         const lines = text.split(/\r?\n/);
         let currentFile = "Unknown.wav", currentTrack = null;
-
         lines.forEach(line => {
             line = line.trim();
             if (!currentTrack) {
@@ -379,16 +422,12 @@
                 else if (line.startsWith("REM GENRE")) { fillGlobalIfEmpty('g_genre', line.replace('REM GENRE', '').trim().replace(/^"(.*)"$/, '$1')); }
                 else if (line.startsWith("REM DATE")) { fillGlobalIfEmpty('g_date', line.replace('REM DATE', '').trim().replace(/^"(.*)"$/, '$1')); }
             }
-
             if (line.startsWith("FILE")) {
                 const match = line.match(/FILE\s+"(.+)"\s+WAVE/);
-                if (match) {
-                    currentFile = match[1].split(/[\\/]/).pop();
-                    fillGlobalIfEmpty('g_filename', currentFile); // Вытягиваем первый файл в глобальную шапку
-                }
+                if (match) { currentFile = match[1].split(/[\\/]/).pop(); fillGlobalIfEmpty('g_filename', currentFile); }
             } else if (line.startsWith("TRACK")) {
                 if (currentTrack) tracks.push(currentTrack);
-                currentTrack = { filename: currentFile, title: "", performer: "", index: "00:00:00" };
+                currentTrack = { filename: currentFile, title: "", performer: "", index: "00:00:00", durationSec: 0 };
             } else if (currentTrack) {
                 if (line.startsWith("TITLE")) { const m = line.match(/TITLE\s+"(.*)"/); if (m) currentTrack.title = m[1]; } 
                 else if (line.startsWith("PERFORMER")) { const m = line.match(/PERFORMER\s+"(.*)"/); if (m) currentTrack.performer = m[1]; } 
@@ -398,36 +437,67 @@
         if (currentTrack) tracks.push(currentTrack);
     }
 
+    // --- ФИЧА: СЕТЛИСТ (ПАКЕТНОЕ ПЕРЕИМЕНОВАНИЕ) ---
+    function openSetlistModal() {
+        document.getElementById('set_text').value = "";
+        document.getElementById('setlistModal').style.display = 'flex';
+    }
+    
+    function closeSetlistModal() { document.getElementById('setlistModal').style.display = 'none'; }
+    
+    function applySetlist() {
+        const text = document.getElementById('set_text').value;
+        const lines = text.split('\n').map(l => l.trim()).filter(l => l !== "");
+
+        if (lines.length === 0) return closeSetlistModal();
+
+        // Заменяем названия у существующих треков (по порядку)
+        let updateCount = Math.min(tracks.length, lines.length);
+
+        for(let i = 0; i < updateCount; i++) {
+            let newTitle = lines[i];
+            // Regex: отбрасывает цифры в начале строки, за которыми идут опциональные символы (., -, ), :) и обязательный пробел
+            // Например: "01. Song", "2 - Song", "14) Song", "05 Song" -> "Song"
+            newTitle = newTitle.replace(/^\s*\d+[\s\.\-\):]+\s*/, '').trim();
+            tracks[i].title = newTitle;
+        }
+
+        renderTable();
+        closeSetlistModal();
+    }
+
+    // --- ФИЧА: СКЛЕИВАНИЕ (MERGE) ---
+    function mergeTracksToSingleFile() {
+        if (tracks.length < 1) return;
+        let globalFile = document.getElementById('g_filename').value.trim() || "Joined.wav";
+        let cumulativeSec = 0;
+        let missingDuration = false;
+
+        tracks.forEach(t => {
+            t.filename = globalFile;
+            t.index = formatTimeCUE(cumulativeSec);
+            if (t.durationSec !== undefined && t.durationSec > 0) { cumulativeSec += t.durationSec; } 
+            else { missingDuration = true; }
+        });
+        if (missingDuration) alert(t('alert_merge_warn'));
+        renderTable();
+    }
+
+    // --- ОСТАЛЬНЫЕ ФИЧИ ---
     function addManualTrack() {
         let globalFile = document.getElementById('g_filename').value.trim();
         let defaultFile = globalFile ? globalFile : (tracks.length > 0 ? tracks[tracks.length - 1].filename : "Audio.wav");
-        tracks.push({ filename: defaultFile, title: t('new_track'), performer: "", index: "00:00:00" });
+        tracks.push({ filename: defaultFile, title: t('new_track'), performer: "", index: "00:00:00", durationSec: 0 });
         renderTable();
     }
-
-    // --- ФИЧИ ПРИМЕНЕНИЯ (BATCH) ---
-    function applyPerformerToAll() {
-        const p = document.getElementById('g_performer').value;
-        if (!p) return;
-        tracks.forEach(track => track.performer = p);
-        renderTable();
-    }
-
-    function applyFileToAll() {
-        const f = document.getElementById('g_filename').value;
-        if (!f) return;
-        tracks.forEach(track => track.filename = f);
-        renderTable();
-    }
-
-    // --- МОДАЛКА РЕГИСТРА ---
+    function applyPerformerToAll() { const p = document.getElementById('g_performer').value; if (p) { tracks.forEach(t => t.performer = p); renderTable(); } }
+    function applyFileToAll() { const f = document.getElementById('g_filename').value; if (f) { tracks.forEach(t => t.filename = f); renderTable(); } }
+    
     function openCaseModal() { document.getElementById('caseModal').style.display = 'flex'; }
     function closeCaseModal() { document.getElementById('caseModal').style.display = 'none'; }
-    
     function applyCase(mode) {
         if(tracks.length === 0) return closeCaseModal();
         const stopWords = new Set(['a', 'an', 'the', 'and', 'but', 'or', 'for', 'nor', 'on', 'at', 'to', 'from', 'by', 'in', 'of', 'в', 'на', 'с', 'со', 'от', 'к', 'и', 'а', 'но', 'да', 'или', 'за', 'по', 'о', 'об', 'из', 'под', 'над', 'до', 'для']);
-
         tracks.forEach(t => {
             let text = t.title;
             if(!text) return;
@@ -442,68 +512,110 @@
             }
             t.title = text;
         });
-        renderTable();
-        closeCaseModal();
+        renderTable(); closeCaseModal();
     }
 
-    // --- МОДАЛКА НАРЕЗКИ ---
+    // --- ПАРСИНГ ВРЕМЕНИ И ФОРМАТИРОВАНИЕ ---
+    function parseMMSS_Sec(str) {
+        if(!str) return 0; const parts = str.trim().split(':').reverse();
+        return (parseInt(parts[0]) || 0) + ((parseInt(parts[1]) || 0) * 60) + ((parseInt(parts[2]) || 0) * 3600);
+    }
+    
+    function parseMMSS_Frames(str) {
+        if(!str) return 0; const parts = str.trim().split(':');
+        if (parts.length === 3) { return (parseInt(parts[0])||0)*60 + (parseInt(parts[1])||0) + ((parseInt(parts[2])||0)/75); }
+        return parseMMSS_Sec(str);
+    }
+
+    function formatTimeCUE(totalSeconds) {
+        let m = Math.floor(totalSeconds / 60), s = Math.floor(totalSeconds % 60);
+        let f = Math.round((totalSeconds - Math.floor(totalSeconds)) * 75);
+        if(f >= 75) { f = 0; s++; }
+        if(s >= 60) { s = 0; m++; }
+        return String(m).padStart(2,'0')+':'+String(s).padStart(2,'0')+':'+String(f).padStart(2,'0');
+    }
+
+    // --- МОДАЛКИ (DURATION, SPLIT) ---
+    function openDurationModal() {
+        let globalFile = document.getElementById('g_filename').value.trim();
+        let fileField = document.getElementById('dur_file');
+        if (globalFile) fileField.value = globalFile;
+        else if (tracks.length > 0) fileField.value = tracks[tracks.length-1].filename;
+        else fileField.value = "Audio.wav";
+        document.getElementById('dur_text').value = ""; 
+        document.getElementById('durationModal').style.display = 'flex';
+    }
+    function closeDurationModal() { document.getElementById('durationModal').style.display = 'none'; }
+    
+    function applyDurations() {
+        const file = document.getElementById('dur_file').value || "Audio.wav";
+        const offsetSec = parseMMSS_Frames(document.getElementById('dur_offset').value || "00:00:00");
+        const lines = document.getElementById('dur_text').value.split('\n');
+        let cumulativeSec = offsetSec, addedCount = 0;
+
+        const targetFileTracks = tracks.filter(t => t.filename === file);
+        if (targetFileTracks.length === 1 && targetFileTracks[0].index === "00:00:00") { tracks = tracks.filter(t => t !== targetFileTracks[0]); } 
+        else if (tracks.length === 1 && tracks[0].index === "00:00:00" && tracks[0].title === t('new_track')) { tracks = []; }
+
+        lines.forEach(line => {
+            line = line.trim(); if (!line) return;
+            const timeMatch = line.match(/\b(\d{1,2}:\d{2}(?::\d{2})?)\b/);
+            if (timeMatch) {
+                const timeStr = timeMatch[1];
+                let title = line.replace(timeStr, '').trim().replace(/^[-.)\s]+|[-.\s]+$/g, '');
+                if (!title) title = `${t('track_prefix')} ${tracks.length + 1}`;
+                const currentTrackSec = parseMMSS_Sec(timeStr);
+                tracks.push({ filename: file, title: title, performer: "", index: formatTimeCUE(cumulativeSec), durationSec: currentTrackSec });
+                cumulativeSec += currentTrackSec; addedCount++;
+            }
+        });
+        if (addedCount > 0) { renderTable(); closeDurationModal(); } else { alert(t('alert_no_durations')); }
+    }
+
     function openSplitModal() {
         let globalFile = document.getElementById('g_filename').value.trim();
         let currentFileField = document.getElementById('split_file');
-        
-        // Подставляем файл из таблицы или глобальный
         if (!currentFileField.value || currentFileField.value === "Audio.wav") {
             if (globalFile) currentFileField.value = globalFile;
             else if (tracks.length > 0) currentFileField.value = tracks[tracks.length-1].filename;
         }
-        
         document.getElementById('splitModal').style.display = 'flex';
     }
     function closeSplitModal() { document.getElementById('splitModal').style.display = 'none'; }
 
-    function parseMMSS(str) {
-        if(!str) return 0; const parts = str.split(':');
-        return (parseInt(parts[0]) || 0) * 60 + (parseInt(parts[1]) || 0);
-    }
-
-    function formatTimeCUE(secTotal) {
-        let m = Math.floor(secTotal / 60), s = Math.floor(secTotal % 60);
-        let f = Math.round((secTotal - Math.floor(secTotal)) * 75);
-        if(f === 75) { f = 0; s++; }
-        if(s === 60) { s = 0; m++; }
-        return String(m).padStart(2,'0')+':'+String(s).padStart(2,'0')+':'+String(f).padStart(2,'0');
-    }
-
     function applySplit() {
         const file = document.getElementById('split_file').value || "Audio.wav";
-        const totalSec = parseMMSS(document.getElementById('split_total').value);
+        const totalSec = parseMMSS_Sec(document.getElementById('split_total').value);
         if (totalSec <= 0) return alert(t('alert_duration'));
 
         const mode = document.querySelector('input[name="split_mode"]:checked').value;
-        let intervals = [];
+        let intervals = [], singleTrackDur = 0;
+
         if (mode === 'parts') {
             const parts = parseInt(document.getElementById('split_parts').value) || 2;
-            for(let i = 0; i < parts; i++) intervals.push(i * (totalSec / parts));
+            singleTrackDur = totalSec / parts;
+            for(let i = 0; i < parts; i++) intervals.push(i * singleTrackDur);
         } else {
-            const stepSec = parseMMSS(document.getElementById('split_time').value);
+            const stepSec = parseMMSS_Sec(document.getElementById('split_time').value);
             if(stepSec <= 0) return alert(t('alert_duration'));
+            singleTrackDur = stepSec;
             for(let i = 0; i < totalSec; i += stepSec) intervals.push(i);
         }
 
-        if(tracks.length === 1 && tracks[0].index === "00:00:00") tracks = [];
-        intervals.forEach((sec, i) => { tracks.push({ filename: file, title: `${t('track_prefix')} ${i+1}`, performer: "", index: formatTimeCUE(sec) }); });
+        const targetFileTracks = tracks.filter(t => t.filename === file);
+        if (targetFileTracks.length === 1 && targetFileTracks[0].index === "00:00:00") { tracks = tracks.filter(t => t !== targetFileTracks[0]); } 
+        else if (tracks.length === 1 && tracks[0].index === "00:00:00" && tracks[0].title === t('new_track')) { tracks = []; }
+
+        intervals.forEach((sec, i) => { tracks.push({ filename: file, title: `${t('track_prefix')} ${i+1}`, performer: "", index: formatTimeCUE(sec), durationSec: singleTrackDur }); });
         renderTable(); closeSplitModal();
     }
 
-    function fillGlobalIfEmpty(id, val) {
-        const el = document.getElementById(id);
-        if (el && el.value.trim() === "") { el.value = val; if(id==='g_performer') updateTablePlaceholders(); }
-    }
-
+    // --- CORE LOGIC ---
+    function fillGlobalIfEmpty(id, val) { const el = document.getElementById(id); if (el && el.value.trim() === "") { el.value = val; if(id==='g_performer') updateTablePlaceholders(); } }
     function moveUp(i) { if(i===0) return; [tracks[i], tracks[i-1]] = [tracks[i-1], tracks[i]]; renderTable(); }
     function moveDown(i) { if(i===tracks.length-1) return; [tracks[i], tracks[i+1]] = [tracks[i+1], tracks[i]]; renderTable(); }
     function removeTrack(i) { tracks.splice(i, 1); renderTable(); }
-    function insertTrackAfter(i) { tracks.splice(i+1, 0, {filename: tracks[i].filename, title: t('ins_track'), performer: "", index: "00:00:00"}); renderTable(); }
+    function insertTrackAfter(i) { tracks.splice(i+1, 0, {filename: tracks[i].filename, title: t('ins_track'), performer: "", index: "00:00:00", durationSec: 0}); renderTable(); }
     function updateTrack(i, f, v) { tracks[i][f] = v; }
     function updateTablePlaceholders() { renderTable(); }
 
@@ -569,7 +681,10 @@
         document.body.appendChild(a); a.click(); document.body.removeChild(a);
     }
     
-    renderTable();
+    // Вызываем toggleLang() при инициализации, чтобы установить правильные тексты в placeholder
+    toggleLang();
+    toggleLang(); // Дергаем дважды, чтобы вернуться на RU, но с обновленными плейсхолдерами
+    
 </script>
 
 </body>
