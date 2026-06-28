@@ -2,73 +2,53 @@
 
 [🇺🇸 English](#english) | [🇷🇺 Русский](#русский)
 
-**[🌐 USE ONLINE / ИСПОЛЬЗОВАТЬ ОНЛАЙН ПРЯМО В БРАУЗЕРЕ](https://[твой-логин].github.io/[название-репозитория]/CUE_Master.html)**
+**[🌐 USE ONLINE / ИСПОЛЬЗОВАТЬ ОНЛАЙН ПРЯМО В БРАУЗЕРЕ](https://vadimlevo.github.io/CUE-Master-Editor/index.html)**
 
 ---
 
 <a name="english"></a>
 ## 🇺🇸 CUE Master Editor
-A powerful, zero-dependency, single-file web application for creating, editing, and fixing CUE sheets. It runs 100% locally in your browser. You can use it directly online via GitHub Pages or download it for offline use!
+A powerful, zero-dependency, single-file web application for creating, editing, merging, and repairing CUE sheets. Designed primarily for audio engineers, collectors, and digital archivers. It runs 100% locally in your browser.
 
 ### ✨ Key Features
 * **Zero Dependencies:** No installations, no server uploads. Your files never leave your computer.
-* **Smart Drag & Drop:** Drop `.cue`, `.txt`, `.xml` (Matroska/Blu-ray chapters), `.flac`, `.wav`, or `.mp3` files directly into the window. 
-* **XML Chapter Parsing:** Instantly convert Blu-ray/MKV XML chapter files into perfectly timed CUE tracks.
-* **Encoding Fixer:** Automatically detects and fixes broken Cyrillic (Windows-1251) encoding, converting it to standard UTF-8.
-* **AI-Duration (Auto Audio Length):** Drop an audio file, and the app will instantly calculate its exact duration locally.
-* **Auto-Split Generator:** Need to split a 2-hour mix or vinyl rip? Enter the total duration and automatically generate tracks split into equal parts or specific time intervals.
-* **Track Timings Generator:** Paste a list of track durations (e.g., from a vinyl back cover), and it calculates cumulative CUE indexes automatically.
-* **Merge to Single File:** Calculate sequential indexes for a continuous mix instantly.
-* **Batch Operations:** 
-    * **Smart Setlist Paste:** Paste a tracklist, and the app will automatically strip numbers/punctuation and apply titles to your tracks in order.
-    * Apply the Album Performer or Global Audio File to all tracks with one click.
-    * Change the case of all track titles instantly (Title Case, Sentence case, UPPERCASE, lowercase).
-* **Bilingual UI:** Instantly switch between English and Russian.
-
-### 🚀 How to Use
-
-**Option 1: Use Online (No download required)**
-1. Click the **[Live Demo](https://vadimlevo.github.io/CUE-Master-Editor/index.html)** link.
-2. Drag and drop your audio, CUE, or XML files into the drop zone.
-3. Edit metadata, generate timings, or paste a setlist.
-4. Click **"SAVE CUE"** to download your perfectly formatted Master CUE sheet.
-
-**Option 2: Use Offline**
-1. Download the `index.html` file to your computer.
-2. Double-click to open it in any modern web browser (Chrome, Edge, Firefox, Safari) without needing an internet connection.
+* **Full-Window Drag & Drop:** Drop `.cue`, `.txt`, `.xml`, `.m3u`, `.m3u8`, `.flac`, `.wav`, or `.mp3` files anywhere onto the window.
+* **M3U/M3U8 Playlist Support:** Import multi-file playlists to automatically generate custom CUE sheets while preserving the original full folder paths.
+* **XML Chapter Parsing:** Instantly convert Blu-ray/MKV XML chapter formats into perfectly timed CUE tracks.
+* **Encoding Auto-Fixer:** Automatically detects and repairs broken Cyrillic (Windows-1251) text encoding, converting it to standard UTF-8.
+* **Smart Timeline Tools:**
+    * **Batch Merge:** Convert a multi-file layout into a single, continuous CUE matrix with a progressive timeline (ideal for seamless live mixes or album rips).
+    * **Time Shift:** Smartly shift cues forward, starting from any specific track, by entering the duration of an inserted audio track (`MM:SS`).
+    * **Auto-Split Generator:** Enter total duration to automatically create equal parts or specific time intervals.
+    * **Duration Parser:** Paste raw text lists containing track lengths to generate cumulative timestamp structures instantly.
+* **Advanced Text Styling:**
+    * **Setlist Importer:** Copy-paste a text tracklist to update titles sequentially.
+    * **Smart Clean:** Strip leading numbers (`01.`, `2 -`, `3)`) from titles across the whole table with a single click.
+    * **Case Formatter:** Batch update title registry (Title Case, Sentence case, UPPERCASE, lowercase).
+* **Smart UI & Caching:** Automated Genre auto-complete system powered by local browser storage. Full bilingual layout (EN/RU).
 
 ---
 
 <a name="русский"></a>
 ## 🇷🇺 CUE Master Editor
-Мощное веб-приложение в одном файле для создания, редактирования и "починки" CUE-файлов. Работает на 100% локально прямо в вашем браузере. Вы можете использовать его прямо онлайн через GitHub Pages или скачать для работы без интернета!
+Мощное автономное веб-приложение в одном файле для создания, редактирования, склейки и исправления CUE-файлов. Разработано специально для диджеев, коллекционеров бутлегов и энтузиастов высококачественного звука.
 
 ### ✨ Главные особенности
-* **Никаких зависимостей:** Без установок и без загрузки файлов на сервер. Все ваши файлы остаются только на вашем компьютере.
-* **Умный Drag & Drop:** Перетаскивайте файлы `.cue`, `.txt`, `.xml` (Главы Matroska/Blu-ray), `.flac`, `.wav` или `.mp3` прямо в окно.
-* **Парсинг XML-глав:** Мгновенная конвертация файлов глав от Blu-ray/MKV в готовые треки CUE с точным таймингом.
-* **Починка кодировки:** Программа автоматически распознает "сломанную" кириллицу (Windows-1251) из старых файлов и корректно переводит её в современный UTF-8.
-* **Авто-определение длительности:** Перетащите аудиофайл, и браузер мгновенно вычислит его точную длину.
-* **Генератор нарезки (Auto-Split):** Нужно порезать 2-часовой диджей-микс или оцифровку винила? Укажите время, и программа сама расставит индексы на равные части или заданные интервалы.
-* **Генератор по таймингам:** Вставьте список длительностей (например, с обложки пластинки), и программа сама рассчитает абсолютные индексы нарастающим итогом.
-* **Склейка (Merge):** Мгновенный расчет индексов друг за другом для непрерывного микса (удобно при объединении нескольких файлов в один).
-* **Массовые действия:**
-    * **Умный Сетлист:** Вставьте список треков текстом — программа сама отбросит нумерацию (01., 2-) и переименует треки по порядку.
-    * Применение Исполнителя или Общего аудиофайла ко всем трекам альбома в один клик.
-    * Массовая смена регистра названий (Каждое Слово С Заглавной, ВСЕ ЗАГЛАВНЫЕ, все строчные и т.д.).
-* **Двуязычный интерфейс:** Мгновенное переключение между русским и английским языком без перезагрузки страницы.
-
-### 🚀 Как использовать
-
-**Вариант 1: Использовать онлайн (Без скачивания)**
-1. Просто перейдите по ссылке на **[Онлайн-версию](https://vadimlevo.github.io/CUE-Master-Editor/index.html)**.
-2. Перетащите в окно ваши аудиофайлы, кривые CUE или XML-главы.
-3. Отредактируйте теги, сгенерируйте тайминги или вставьте готовый сетлист.
-4. Нажмите **"СОХРАНИТЬ CUE"**, чтобы получить идеальный файл CUE.
-
-**Вариант 2: Локальное использование (Оффлайн)**
-1. Скачайте файл index.html и сохраните как CUE_Master.html (или как вам нравится) на свой компьютер.
-2. Запускайте его двойным кликом в любом браузере (Chrome, Edge, Firefox, Safari) даже когда нет интернета.
+* **Никаких зависимостей:** Без сторонних серверов и скриптов. Все файлы обрабатываются на 100% локально на вашем компьютере.
+* **Бронебойный Drag & Drop:** Перетаскивайте файлы `.cue`, `.txt`, `.xml`, `.m3u`, `.m3u8`, `.flac`, `.wav` или `.mp3` в любое место окна приложения.
+* **Полная поддержка M3U/M3U8:** Импортируйте многофайловые плейлисты для автоматической сборки CUE-разметки с сохранением полных путей к файлам.
+* **Парсинг XML-глав Blu-ray:** Конвертируйте файлы глав из Matroska (MKV) и Blu-ray дисков в CUE с автоматическим пересчетом наносекунд во фреймы (`MM:SS:FF`).
+* **Починка кодировки:** Автоматическое исправление "кракозябр" старой кириллицы (Windows-1251) и перевод текста в современный UTF-8.
+* **Умная работа со временем:**
+    * **Пакетная склейка (Merge):** Соберите многофайловый релиз в один сплошной CUE-образ с расчетом индексов нарастающим итогом (идеально для склеенных концертов).
+    * **Сдвиг таймингов:** Сдвигайте временную сетку вперед начиная с любого выбранного трека на заданное время вставки (`MM:SS`).
+    * **Генератор нарезки:** Нарезайте треки на равные части или равные промежутки времени.
+    * **Расчет по длительности:** Вставьте список песен с их хронометражем (например, с обложки пластинки), и программа сама вычислит абсолютное время старта для каждого трека.
+* **Пакетная обработка текста:**
+    * **Импорт сетлистов:** Вставляйте текстовые списки треков из интернета для мгновенного переименования всех позиций в таблице.
+    * **Очистка от нумерации:** Удаляйте мусорные номера треков в названиях (`01. `, `2 - `, `3) `) одним нажатием кнопки по всей таблице.
+    * **Регистр строк:** Массовое форматирование регистра (Каждое Слово С Заглавной, С учётом слов-связок, Как в предложении, ВЕРХНИЙ, нижний).
+* **Умный кэш жанров:** Система автозаполнения жанров, запоминающая ваши предпочтения локально в браузере. Полный двуязычный интерфейс (RU/EN).
 
 ---
 **License:** MIT License. Feel free to fork and improve!
