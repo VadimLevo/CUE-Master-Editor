@@ -8,7 +8,7 @@
 
 <a name="english"></a>
 ## 🇺🇸 CUE Master Editor
-A powerful, zero-dependency, single-file web application for creating, editing, merging, and repairing CUE sheets. Designed primarily for audio engineers, collectors, and digital archivers. It runs 100% locally in your browser.
+A powerful, zero-dependency, single-file web application for creating, editing, merging, and repairing CUE sheets. It runs 100% locally in your browser.
 
 ### ✨ Key Features
 * **Zero Dependencies:** No installations, no server uploads. Your files never leave your computer.
@@ -31,7 +31,7 @@ A powerful, zero-dependency, single-file web application for creating, editing, 
 
 <a name="русский"></a>
 ## 🇷🇺 CUE Master Editor
-Мощное автономное веб-приложение в одном файле для создания, редактирования, склейки и исправления CUE-файлов. Разработано специально для диджеев, коллекционеров бутлегов и энтузиастов высококачественного звука.
+Мощное автономное веб-приложение в одном файле для создания, редактирования, склейки и исправления CUE-файлов.
 
 ### ✨ Главные особенности
 * **Никаких зависимостей:** Без сторонних серверов и скриптов. Все файлы обрабатываются на 100% локально на вашем компьютере.
