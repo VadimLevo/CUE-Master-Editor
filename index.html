@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>CUE Master Editor v23</title>
+    <title>CUE Master Editor v24</title>
     <style>
         body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #f4f7f9; margin: 0; padding: 20px; color: #333; }
         .container { max-width: 1150px; margin: 0 auto; background: white; padding: 25px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.08); }
@@ -82,7 +82,7 @@
 <div class="container">
     <h2>
         <span>💿 CUE Master Editor</span>
-        <span class="version-badge">v23</span>
+        <span class="version-badge">v24</span>
         <button class="lang-switch" onclick="toggleLang()" id="btnLang">🇷🇺 RU</button>
     </h2>
 
@@ -98,7 +98,6 @@
                 </div>
                 <div class="form-group">
                     <label id="lbl_genre">ЖАНР (Genre):</label>
-                    <!-- Добавлен list и datalist для кэша -->
                     <input type="text" id="g_genre" list="genreList" onchange="saveGenreToCache(this.value)">
                     <datalist id="genreList"></datalist>
                 </div>
@@ -156,10 +155,10 @@
         <button class="btn-duration" onclick="openDurationModal()" id="btn_duration">⏱ Тайминги</button>
         <button class="btn-split" onclick="openSplitModal()" id="btn_split">✂️ Нарезать</button>
         <button class="btn-merge" onclick="mergeTracksToSingleFile()" id="btn_merge" title="Рассчитать индексы для единого файла">🔗 Склеить</button>
-		<button class="btn-duration" onclick="openShiftModal()" id="btn_shift">⏱ Сдвиг времени</button>
+        <button class="btn-duration" onclick="openShiftModal()" id="btn_shift">⏱ Сдвиг времени</button>
         <button class="btn-setlist" onclick="openSetlistModal()" id="btn_setlist">📝 Сетлист</button>
         <button class="btn-case" onclick="openCaseModal()" id="btn_case">🔠 Регистр</button>
-		<button class="btn-case" onclick="cleanAllLeadingNumbers()" id="btn_clean_num">✂️ Убрать номера</button>
+        <button class="btn-case" onclick="cleanAllLeadingNumbers()" id="btn_clean_num">✂️ Убрать номера</button>
         
         <button class="btn-clear" onclick="clearTracks()" id="btn_clear_tracks">🗑 Очистить треки</button>
         <button class="btn-clear" onclick="clearAll()" id="btn_clear_all">💥 Очистить всё</button>
@@ -258,16 +257,16 @@
             ph_perf: "Исполнитель", new_track: "Новый трек", ins_track: "Вставленный трек", alert_empty: "Добавьте хотя бы один трек!", 
             confirm_clear: "Очистить вообще всё (треки и теги)?", confirm_clear_tracks: "Очистить только список треков?",
             title_up: "Вверх", title_down: "Вниз", title_ins: "Вставить после", title_del: "Удалить", btn_apply_perf: "Применить ко всем трекам", btn_apply_file: "Применить ко всем трекам",
-            set_mod_title: "Вставка сетлиста", set_lbl_desc: "Вставьте список названий треков (по одному на строку):", set_hint: "Программа автоматически отбросит нумерацию в начале строк (например, '01.', '1 - ', '1)') и заменит названия существующих треков в таблице по порядку.", set_btn_cancel: "Отмена", set_btn_apply: "Применить к таблице",
+            set_mod_title: "Вставка сетлиста", set_lbl_desc: "Вставьте список названий треков (по одного на строку):", set_hint: "Программа автоматически отбросит нумерацию в начале строк (например, '01.', '1 - ', '1)') и заменит названия существующих треков в таблице по порядку.", set_btn_cancel: "Отмена", set_btn_apply: "Применить к таблице",
             mod_title: "Автоматическая нарезка", mod_lbl_file: "Имя аудиофайла (File):", mod_lbl_total: "Общая длительность (MM:SS):", mod_rad_parts: "Разбить на равные части (шт):", mod_rad_time: "Каждые (MM:SS):", mod_btn_cancel: "Отмена", mod_btn_apply: "Создать треки", alert_duration: "Укажите корректную длительность (например, 60:00)", track_prefix: "Часть",
             case_mod_title: "Регистр названий треков", case_desc: "Изменить регистр у всех названий в таблице:", case_title: "Каждое Слово С Заглавной", case_smart: "Каждое Слово С Заглавной (кроме слов-связок)", case_sentence: "Первое слово с заглавной", case_upper: "ВСЕ ЗАГЛАВНЫЕ", case_lower: "все строчные", case_btn_close: "Отмена",
             dur_mod_title: "Создание треков по длительности", dur_lbl_file: "Аудиофайл:", dur_lbl_offset: "Начало (смещение):", dur_lbl_desc: "Вставьте список (MM:SS Название):", dur_hint: "Программа найдет время в каждой строке, переведет его в абсолютные индексы с нарастающим итогом и извлечет названия.", dur_btn_cancel: "Отмена", dur_btn_apply: "Сгенерировать", alert_no_durations: "Не найдено ни одной корректной длительности.", btn_shift: "⏱ Сдвиг времени",
-        btn_clean_num: "✂️ Убрать номера",
-        shift_mod_title: "Сдвиг таймингов",
-        shift_lbl_start: "Начать с трека №:",
-        shift_lbl_delta: "Длительность вставки (MM:SS):",
-        shift_btn_cancel: "Отмена",
-        shift_btn_apply: "Сдвинуть",
+            btn_clean_num: "✂️ Убрать номера",
+            shift_mod_title: "Сдвиг таймингов",
+            shift_lbl_start: "Начать с трека №:",
+            shift_lbl_delta: "Длительность вставки (MM:SS):",
+            shift_btn_cancel: "Отмена",
+            shift_btn_apply: "Сдвинуть",
             alert_merge_warn: "Внимание: некоторые аудиофайлы не имеют точной длительности (возможно, добавлены из текста). Рассчет может быть неточным."
         },
         en: {
@@ -282,12 +281,12 @@
             mod_title: "Auto-Split Generator", mod_lbl_file: "Audio File Name:", mod_lbl_total: "Total Duration (MM:SS):", mod_rad_parts: "Divide into equal parts (qty):", mod_rad_time: "Split every (MM:SS):", mod_btn_cancel: "Cancel", mod_btn_apply: "Generate Tracks", alert_duration: "Please enter a valid duration (e.g., 60:00)", track_prefix: "Part",
             case_mod_title: "Track Title Case", case_desc: "Change case for all titles in the list:", case_title: "Title Case", case_smart: "Title Case (Except Stop Words)", case_sentence: "Sentence case", case_upper: "UPPERCASE", case_lower: "lowercase", case_btn_close: "Cancel",
             dur_mod_title: "Generate Tracks by Duration", dur_lbl_file: "Audio File:", dur_lbl_offset: "Start Offset:", dur_lbl_desc: "Paste your list (MM:SS Title):", dur_hint: "The app will parse the time in each line, calculate cumulative absolute indexes, and extract track titles automatically.", dur_btn_cancel: "Cancel", dur_btn_apply: "Generate", alert_no_durations: "No valid durations found in text.", btn_shift: "⏱ Time Shift",
-        btn_clean_num: "✂️ Clean Numbers",
-        shift_mod_title: "Shift Timings",
-        shift_lbl_start: "Start from track №:",
-        shift_lbl_delta: "Insert duration (MM:SS):",
-        shift_btn_cancel: "Cancel",
-        shift_btn_apply: "Shift",
+            btn_clean_num: "✂️ Clean Numbers",
+            shift_mod_title: "Shift Timings",
+            shift_lbl_start: "Start from track №:",
+            shift_lbl_delta: "Insert duration (MM:SS):",
+            shift_btn_cancel: "Cancel",
+            shift_btn_apply: "Shift",
             alert_merge_warn: "Warning: Some tracks don't have an exact audio duration (likely added manually or from text). The calculation might be incomplete."
         }
     };
@@ -305,8 +304,8 @@
             'case_mod_title', 'case_desc', 'case_title', 'case_smart', 'case_sentence', 'case_upper', 'case_lower', 'case_btn_close',
             'dur_mod_title', 'dur_lbl_file', 'dur_lbl_offset', 'dur_lbl_desc', 'dur_hint', 'dur_btn_cancel', 'dur_btn_apply',
             'set_mod_title', 'set_lbl_desc', 'set_hint', 'set_btn_cancel', 'set_btn_apply', 'btn_shift', 'btn_clean_num', 
-        'shift_mod_title', 'shift_lbl_start', 'shift_lbl_delta', 'shift_btn_cancel', 'shift_btn_apply'
-    ];
+            'shift_mod_title', 'shift_lbl_start', 'shift_lbl_delta', 'shift_btn_cancel', 'shift_btn_apply'
+        ];
         staticIds.forEach(id => { const el = document.getElementById(id); if (el) el.innerText = t(id); });
         document.getElementById('btn_apply_perf').title = t('btn_apply_perf');
         document.getElementById('btn_apply_file').title = t('btn_apply_file');
@@ -336,7 +335,7 @@
         let genres = JSON.parse(localStorage.getItem('cue_genres') || '[]');
         if (!genres.includes(genre)) {
             genres.push(genre);
-            if (genres.length > 30) genres.shift(); // Ограничиваем список до 30 элементов
+            if (genres.length > 30) genres.shift();
             localStorage.setItem('cue_genres', JSON.stringify(genres));
             loadGenresFromCache();
         }
@@ -372,7 +371,13 @@
         for (let file of fileArray) {
             const ext = file.name.split('.').pop().toLowerCase();
             if (['cue', 'txt'].includes(ext)) {
-                const text = await readAutoEncoded(file); parseCue(text);
+                const text = await readAutoEncoded(file);
+                // Проверяем, является ли текстовый файл маркерами iZotope RX
+                if (text.includes('Marker file version') || /^[^\t\r\n]+\t+\d{2}:\d{2}:\d{2}/m.test(text)) {
+                    parseRX11Markers(text, file.name);
+                } else {
+                    parseCue(text);
+                }
             } else if (['m3u', 'm3u8'].includes(ext)) {
                 const text = await readAutoEncoded(file); parseM3U(text);
             } else if (ext === 'xml') {
@@ -394,6 +399,65 @@
         const buffer = await file.arrayBuffer();
         try { return new TextDecoder("utf-8", { fatal: true }).decode(buffer); } 
         catch(e) { return new TextDecoder("windows-1251").decode(buffer); }
+    }
+
+    // --- ПАРСЕР МАРКЕРОВ iZotope RX 11 ---
+    function parseRX11Markers(text, sourceFilename) {
+        const lines = text.split(/\r?\n/);
+        let parsedTracks = [];
+        let globalFile = document.getElementById('g_filename').value.trim();
+        let fallbackFile = globalFile ? globalFile : (tracks.length > 0 ? tracks[tracks.length - 1].filename : sourceFilename.replace(/\.txt$/i, '.wav'));
+
+        if (tracks.length === 1 && tracks[0].index === "00:00:00" && tracks[0].title === t('new_track')) { 
+            tracks = []; 
+        }
+
+        lines.forEach(line => {
+            if (!line.trim() || line.startsWith('Marker file version') || line.startsWith('Time format')) {
+                return;
+            }
+
+            const match = line.match(/^(.*?)\t+(\d{2}):(\d{2}):(\d{2})[,.](\d+)/);
+            if (match) {
+                let title = match[1].trim();
+                let hrs = parseInt(match[2], 10);
+                let mins = parseInt(match[3], 10);
+                let secs = parseInt(match[4], 10);
+                let msStr = match[5].substring(0, 3);
+                let ms = parseInt(msStr.padEnd(3, '0'), 10);
+
+                let frames = Math.floor((ms / 1000) * 75);
+                let totalMins = (hrs * 60) + mins;
+
+                let cueIndex = 
+                    String(totalMins).padStart(2, '0') + ":" +
+                    String(secs).padStart(2, '0') + ":" +
+                    String(frames).padStart(2, '0');
+
+                parsedTracks.push({
+                    filename: fallbackFile,
+                    title: title,
+                    performer: "",
+                    index: cueIndex,
+                    durationSec: 0
+                });
+            }
+        });
+
+        if (parsedTracks.length === 0) return;
+
+        // Если первый маркер НЕ на 00:00:00, добавляем служебный Track 01, сохраняя точные имена маркеров
+        if (parsedTracks[0].index !== "00:00:00") {
+            parsedTracks.unshift({
+                filename: fallbackFile,
+                title: "Track 01",
+                performer: "",
+                index: "00:00:00",
+                durationSec: 0
+            });
+        }
+
+        tracks = tracks.concat(parsedTracks);
     }
 
     // --- БРОНЕБОЙНЫЙ ПАРСЕР CUE ---
@@ -577,41 +641,40 @@
     function updateTrack(i, f, v) { tracks[i][f] = v; }
     function updateTablePlaceholders() { renderTable(); }
 
-// --- ФУНКЦИИ СДВИГА ВРЕМЕНИ ---
-function openShiftModal() {
-    document.getElementById('shift_delta').value = "";
-    document.getElementById('shiftModal').style.display = 'flex';
-}
-function closeShiftModal() { document.getElementById('shiftModal').style.display = 'none'; }
+    // --- ФУНКЦИИ СДВИГА ВРЕМЕНИ ---
+    function openShiftModal() {
+        document.getElementById('shift_delta').value = "";
+        document.getElementById('shiftModal').style.display = 'flex';
+    }
+    function closeShiftModal() { document.getElementById('shiftModal').style.display = 'none'; }
 
-function applyTimeShift() {
-    const startNum = parseInt(document.getElementById('shift_start_idx').value) || 1;
-    const deltaStr = document.getElementById('shift_delta').value;
-    const deltaSec = parseMMSS_Frames(deltaStr);
+    function applyTimeShift() {
+        const startNum = parseInt(document.getElementById('shift_start_idx').value) || 1;
+        const deltaStr = document.getElementById('shift_delta').value;
+        const deltaSec = parseMMSS_Frames(deltaStr);
 
-    if (deltaSec <= 0 || startNum > tracks.length) {
-        return closeShiftModal();
+        if (deltaSec <= 0 || startNum > tracks.length) {
+            return closeShiftModal();
+        }
+
+        for (let i = startNum - 1; i < tracks.length; i++) {
+            let currentSec = parseMMSS_Frames(tracks[i].index);
+            let newSec = currentSec + deltaSec;
+            tracks[i].index = formatTimeCUE(newSec);
+        }
+
+        renderTable();
+        closeShiftModal();
     }
 
-    // Сдвигаем треки (индексы в массиве начинаются с 0, поэтому startNum - 1)
-    for (let i = startNum - 1; i < tracks.length; i++) {
-        let currentSec = parseMMSS_Frames(tracks[i].index);
-        let newSec = currentSec + deltaSec;
-        tracks[i].index = formatTimeCUE(newSec);
+    // --- ФУНКЦИЯ ОЧИСТКИ ОТ НОМЕРОВ ---
+    function cleanAllLeadingNumbers() {
+        if (tracks.length === 0) return;
+        tracks.forEach(track => {
+            track.title = track.title.replace(/^\s*\d+[\s\.\-\):]+\s*/, '').trim();
+        });
+        renderTable();
     }
-
-    renderTable();
-    closeShiftModal();
-}
-
-// --- ФУНКЦИЯ ОЧИСТКИ ОТ НОМЕРОВ ---
-function cleanAllLeadingNumbers() {
-    if (tracks.length === 0) return;
-    tracks.forEach(track => {
-        track.title = track.title.replace(/^\s*\d+[\s\.\-\):]+\s*/, '').trim();
-    });
-    renderTable();
-}
 
     function renderTable() {
         const tbody = document.getElementById('tbody'); tbody.innerHTML = ''; document.getElementById('emptyState').style.display = tracks.length ? 'none' : 'block'; document.getElementById('trackTable').style.display = tracks.length ? 'table' : 'none'; const globalPerf = document.getElementById('g_performer').value;
@@ -643,7 +706,6 @@ function cleanAllLeadingNumbers() {
         const g_date = document.getElementById('g_date').value;
         const g_comment = document.getElementById('g_comment').value;
 
-        // Сохраняем жанр в кеш при ручном сохранении
         if(g_genre) saveGenreToCache(g_genre);
 
         let content = [];
