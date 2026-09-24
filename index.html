@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>CUE Master Editor v24</title>
+    <title>CUE Master Editor v25</title>
     <style>
         body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #f4f7f9; margin: 0; padding: 20px; color: #333; }
         .container { max-width: 1150px; margin: 0 auto; background: white; padding: 25px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.08); }
@@ -82,7 +82,7 @@
 <div class="container">
     <h2>
         <span>💿 CUE Master Editor</span>
-        <span class="version-badge">v24</span>
+        <span class="version-badge">v25</span>
         <button class="lang-switch" onclick="toggleLang()" id="btnLang">🇷🇺 RU</button>
     </h2>
 
@@ -372,10 +372,16 @@
             const ext = file.name.split('.').pop().toLowerCase();
             if (['cue', 'txt'].includes(ext)) {
                 const text = await readAutoEncoded(file);
-                // Проверяем, является ли текстовый файл маркерами iZotope RX
-                if (text.includes('Marker file version') || /^[^\t\r\n]+\t+\d{2}:\d{2}:\d{2}/m.test(text)) {
+                // 1. Детекция CD Architect
+                if (text.includes('Cue Sheet') || text.includes('Track Index In') || text.includes('UPC/MCN')) {
+                    parseCDArchitectCue(text, file.name);
+                }
+                // 2. Детекция экспорта маркеров iZotope RX
+                else if (text.includes('Marker file version') || /^[^\t\r\n]+\t+\d{2}:\d{2}:\d{2}/m.test(text)) {
                     parseRX11Markers(text, file.name);
-                } else {
+                } 
+                // 3. Стандартный CUE / Текст
+                else {
                     parseCue(text);
                 }
             } else if (['m3u', 'm3u8'].includes(ext)) {
@@ -395,10 +401,88 @@
         renderTable();
     }
 
+    // Чтение файлов с универсальным автоопределением кодировок (UTF-16 LE/BE, UTF-8, Windows-1251)
     async function readAutoEncoded(file) {
         const buffer = await file.arrayBuffer();
-        try { return new TextDecoder("utf-8", { fatal: true }).decode(buffer); } 
-        catch(e) { return new TextDecoder("windows-1251").decode(buffer); }
+        const uint8 = new Uint8Array(buffer);
+
+        // Детекция UTF-16 по BOM или нулевым байтам
+        if (uint8.length >= 2) {
+            if (uint8[0] === 0xFF && uint8[1] === 0xFE) {
+                return new TextDecoder("utf-16le").decode(buffer);
+            }
+            if (uint8[0] === 0xFE && uint8[1] === 0xFF) {
+                return new TextDecoder("utf-16be").decode(buffer);
+            }
+            // Проверка UTF-16 LE без BOM (каждый 2-й байт - нулевой)
+            let zeroCount = 0;
+            const samples = Math.min(uint8.length, 100);
+            for (let i = 1; i < samples; i += 2) {
+                if (uint8[i] === 0) zeroCount++;
+            }
+            if (zeroCount > (samples / 4)) {
+                return new TextDecoder("utf-16le").decode(buffer);
+            }
+        }
+
+        // Попытка декодировать как UTF-8, при ошибке — Windows-1251
+        try { 
+            return new TextDecoder("utf-8", { fatal: true }).decode(buffer); 
+        } catch(e) { 
+            return new TextDecoder("windows-1251").decode(buffer); 
+        }
+    }
+
+    // --- ПАРСЕР ФОРМАТА CD ARCHITECT ---
+    function parseCDArchitectCue(text, sourceFilename) {
+        const lines = text.split(/\r?\n/);
+        let parsedTracks = [];
+        let globalFile = document.getElementById('g_filename').value.trim();
+        let fallbackFile = globalFile ? globalFile : (tracks.length > 0 ? tracks[tracks.length - 1].filename : sourceFilename.replace(/\.txt$/i, '.wav'));
+
+        if (tracks.length === 1 && tracks[0].index === "00:00:00" && tracks[0].title === t('new_track')) { 
+            tracks = []; 
+        }
+
+        // Регулярное выражение для строк таблицы CD Architect: Track | Index | In | Out | Length | Title
+        const rowRegex = /^\s*(\d+)\s+(\d+)\s+(\d{2}:\d{2}:\d{2}:\d{2})\s+(\d{2}:\d{2}:\d{2}:\d{2})\s+(\d{2}:\d{2}:\d{2}:\d{2})\s*(.*?)\s*$/;
+
+        function formatCDArchitectTime(timeStr) {
+            const parts = timeStr.split(':').map(Number);
+            const totalMinutes = parts[0] * 60 + parts[1];
+            const ss = String(parts[2]).padStart(2, '0');
+            const ff = String(parts[3]).padStart(2, '0');
+            const mm = String(totalMinutes).padStart(2, '0');
+            return `${mm}:${ss}:${ff}`;
+        }
+
+        lines.forEach(line => {
+            const match = line.match(rowRegex);
+            if (match) {
+                const trackNum = parseInt(match[1], 10);
+                const indexNum = parseInt(match[2], 10);
+                const timeIn = match[3];
+                let title = match[6].trim();
+
+                // Игнорируем предзазоры (Index 0) и обрабатываем только основные индексы треков
+                if (indexNum === 1) {
+                    if (!title) {
+                        title = `Track ${String(trackNum).padStart(2, '0')}`;
+                    }
+                    parsedTracks.push({
+                        filename: fallbackFile,
+                        title: title,
+                        performer: "",
+                        index: formatCDArchitectTime(timeIn),
+                        durationSec: 0
+                    });
+                }
+            }
+        });
+
+        if (parsedTracks.length > 0) {
+            tracks = tracks.concat(parsedTracks);
+        }
     }
 
     // --- ПАРСЕР МАРКЕРОВ iZotope RX 11 ---
