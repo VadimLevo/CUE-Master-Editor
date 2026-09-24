@@ -16,7 +16,7 @@ A powerful, zero-dependency, single-file web application for creating, editing, 
 * **M3U/M3U8 Playlist Support:** Import multi-file playlists to automatically generate custom CUE sheets while preserving the original full folder paths.
 * **XML Chapter Parsing:** Instantly convert Blu-ray/MKV XML chapter formats into perfectly timed CUE tracks.
 * **iZotope RX Marker Export Parsing.**
-* **CD Architect Track List Import.**
+* **CD Architect Track List Parsing.**
 * **Encoding Auto-Fixer:** Automatically detects and repairs broken Cyrillic (Windows-1251) text encoding, converting it to standard UTF-8.
 * **Smart Timeline Tools:**
     * **Batch Merge:** Convert a multi-file layout into a single, continuous CUE matrix with a progressive timeline (ideal for seamless live mixes or album rips).
