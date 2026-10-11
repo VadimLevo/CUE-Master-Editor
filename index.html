@@ -257,7 +257,7 @@
             ph_perf: "Исполнитель", new_track: "Новый трек", ins_track: "Вставленный трек", alert_empty: "Добавьте хотя бы один трек!", 
             confirm_clear: "Очистить вообще всё (треки и теги)?", confirm_clear_tracks: "Очистить только список треков?",
             title_up: "Вверх", title_down: "Вниз", title_ins: "Вставить после", title_del: "Удалить", btn_apply_perf: "Применить ко всем трекам", btn_apply_file: "Применить ко всем трекам",
-            set_mod_title: "Вставка сетлиста", set_lbl_desc: "Вставьте список названий треков (по одного на строку):", set_hint: "Программа автоматически отбросит нумерацию в начале строк (например, '01.', '1 - ', '1)') и заменит названия существующих треков в таблице по порядку.", set_btn_cancel: "Отмена", set_btn_apply: "Применить к таблице",
+            set_mod_title: "Вставка сетлиста", set_lbl_desc: "Вставьте список названий треков (по одному на строку):", set_hint: "Программа автоматически отбросит нумерацию в начале строк (например, '01.', '1 - ', '1)') и заменит названия существующих треков в таблице по порядку.", set_btn_cancel: "Отмена", set_btn_apply: "Применить к таблице",
             mod_title: "Автоматическая нарезка", mod_lbl_file: "Имя аудиофайла (File):", mod_lbl_total: "Общая длительность (MM:SS):", mod_rad_parts: "Разбить на равные части (шт):", mod_rad_time: "Каждые (MM:SS):", mod_btn_cancel: "Отмена", mod_btn_apply: "Создать треки", alert_duration: "Укажите корректную длительность (например, 60:00)", track_prefix: "Часть",
             case_mod_title: "Регистр названий треков", case_desc: "Изменить регистр у всех названий в таблице:", case_title: "Каждое Слово С Заглавной", case_smart: "Каждое Слово С Заглавной (кроме слов-связок)", case_sentence: "Первое слово с заглавной", case_upper: "ВСЕ ЗАГЛАВНЫЕ", case_lower: "все строчные", case_btn_close: "Отмена",
             dur_mod_title: "Создание треков по длительности", dur_lbl_file: "Аудиофайл:", dur_lbl_offset: "Начало (смещение):", dur_lbl_desc: "Вставьте список (MM:SS Название):", dur_hint: "Программа найдет время в каждой строке, переведет его в абсолютные индексы с нарастающим итогом и извлечет названия.", dur_btn_cancel: "Отмена", dur_btn_apply: "Сгенерировать", alert_no_durations: "Не найдено ни одной корректной длительности.", btn_shift: "⏱ Сдвиг времени",
@@ -372,16 +372,11 @@
             const ext = file.name.split('.').pop().toLowerCase();
             if (['cue', 'txt'].includes(ext)) {
                 const text = await readAutoEncoded(file);
-                // 1. Детекция CD Architect
                 if (text.includes('Cue Sheet') || text.includes('Track Index In') || text.includes('UPC/MCN')) {
                     parseCDArchitectCue(text, file.name);
-                }
-                // 2. Детекция экспорта маркеров iZotope RX
-                else if (text.includes('Marker file version') || /^[^\t\r\n]+\t+\d{2}:\d{2}:\d{2}/m.test(text)) {
+                } else if (text.includes('Marker file version') || /^[^\t\r\n]+\t+\d{2}:\d{2}:\d{2}/m.test(text)) {
                     parseRX11Markers(text, file.name);
-                } 
-                // 3. Стандартный CUE / Текст
-                else {
+                } else {
                     parseCue(text);
                 }
             } else if (['m3u', 'm3u8'].includes(ext)) {
@@ -401,12 +396,10 @@
         renderTable();
     }
 
-    // Чтение файлов с универсальным автоопределением кодировок (UTF-16 LE/BE, UTF-8, Windows-1251)
     async function readAutoEncoded(file) {
         const buffer = await file.arrayBuffer();
         const uint8 = new Uint8Array(buffer);
 
-        // Детекция UTF-16 по BOM или нулевым байтам
         if (uint8.length >= 2) {
             if (uint8[0] === 0xFF && uint8[1] === 0xFE) {
                 return new TextDecoder("utf-16le").decode(buffer);
@@ -414,7 +407,6 @@
             if (uint8[0] === 0xFE && uint8[1] === 0xFF) {
                 return new TextDecoder("utf-16be").decode(buffer);
             }
-            // Проверка UTF-16 LE без BOM (каждый 2-й байт - нулевой)
             let zeroCount = 0;
             const samples = Math.min(uint8.length, 100);
             for (let i = 1; i < samples; i += 2) {
@@ -425,7 +417,6 @@
             }
         }
 
-        // Попытка декодировать как UTF-8, при ошибке — Windows-1251
         try { 
             return new TextDecoder("utf-8", { fatal: true }).decode(buffer); 
         } catch(e) { 
@@ -433,7 +424,6 @@
         }
     }
 
-    // --- ПАРСЕР ФОРМАТА CD ARCHITECT ---
     function parseCDArchitectCue(text, sourceFilename) {
         const lines = text.split(/\r?\n/);
         let parsedTracks = [];
@@ -444,7 +434,6 @@
             tracks = []; 
         }
 
-        // Регулярное выражение для строк таблицы CD Architect: Track | Index | In | Out | Length | Title
         const rowRegex = /^\s*(\d+)\s+(\d+)\s+(\d{2}:\d{2}:\d{2}:\d{2})\s+(\d{2}:\d{2}:\d{2}:\d{2})\s+(\d{2}:\d{2}:\d{2}:\d{2})\s*(.*?)\s*$/;
 
         function formatCDArchitectTime(timeStr) {
@@ -464,7 +453,6 @@
                 const timeIn = match[3];
                 let title = match[6].trim();
 
-                // Игнорируем предзазоры (Index 0) и обрабатываем только основные индексы треков
                 if (indexNum === 1) {
                     if (!title) {
                         title = `Track ${String(trackNum).padStart(2, '0')}`;
@@ -485,7 +473,6 @@
         }
     }
 
-    // --- ПАРСЕР МАРКЕРОВ iZotope RX 11 ---
     function parseRX11Markers(text, sourceFilename) {
         const lines = text.split(/\r?\n/);
         let parsedTracks = [];
@@ -530,7 +517,6 @@
 
         if (parsedTracks.length === 0) return;
 
-        // Если первый маркер НЕ на 00:00:00, добавляем служебный Track 01, сохраняя точные имена маркеров
         if (parsedTracks[0].index !== "00:00:00") {
             parsedTracks.unshift({
                 filename: fallbackFile,
@@ -544,7 +530,6 @@
         tracks = tracks.concat(parsedTracks);
     }
 
-    // --- БРОНЕБОЙНЫЙ ПАРСЕР CUE ---
     function parseCue(text) {
         const lines = text.split(/\r?\n/);
         let currentFile = "Unknown.wav", currentTrack = null;
@@ -655,12 +640,35 @@
     
     function openCaseModal() { document.getElementById('caseModal').style.display = 'flex'; }
     function closeCaseModal() { document.getElementById('caseModal').style.display = 'none'; }
+    
+    // --- ИСПРАВЛЕННАЯ ЛОГИКА РЕГИСТРА С ЗАЩИТОЙ ОТ 's ---
     function applyCase(mode) {
         if(tracks.length === 0) return closeCaseModal();
         const stopWords = new Set(['a', 'an', 'the', 'and', 'but', 'or', 'for', 'nor', 'on', 'at', 'to', 'from', 'by', 'in', 'of', 'в', 'на', 'с', 'со', 'от', 'к', 'и', 'а', 'но', 'да', 'или', 'за', 'по', 'о', 'об', 'из', 'под', 'над', 'до', 'для']);
+        
         tracks.forEach(t => {
             let text = t.title; if(!text) return;
-            if (mode === 'upper') { text = text.toUpperCase(); } else if (mode === 'lower') { text = text.toLowerCase(); } else if (mode === 'sentence') { text = text.charAt(0).toUpperCase() + text.slice(1).toLowerCase(); } else if (mode === 'title') { text = text.toLowerCase().replace(/(^|\s|-|\(|\[|"|')([a-zа-яё])/g, m => m.toUpperCase()); } else if (mode === 'title_smart') { let temp = text.toLowerCase().replace(/(^|\s|-|\(|\[|"|')([a-zа-яё])/g, m => m.toUpperCase()); stopWords.forEach(sw => { temp = temp.replace(new RegExp("\\s" + sw + "\\s", "gi"), " " + sw.toLowerCase() + " "); }); text = temp; }
+            if (mode === 'upper') { 
+                text = text.toUpperCase(); 
+            } else if (mode === 'lower') { 
+                text = text.toLowerCase(); 
+            } else if (mode === 'sentence') { 
+                text = text.charAt(0).toUpperCase() + text.slice(1).toLowerCase(); 
+            } else if (mode === 'title' || mode === 'title_smart') {
+                let words = text.toLowerCase().split(/(\s+)/);
+                let processedWords = words.map((word, index, arr) => {
+                    if (/^\s+$/.test(word)) return word;
+                    
+                    let cleanWord = word.replace(/[^a-zа-яё]/gi, '');
+                    if (mode === 'title_smart' && index > 0 && stopWords.has(cleanWord)) {
+                        return word;
+                    }
+                    
+                    return word.replace(/^([a-zа-яё])/, m => m.toUpperCase())
+                               .replace(/([''`–-]s)\b/gi, m => m.toLowerCase());
+                });
+                text = processedWords.join('');
+            }
             t.title = text;
         });
         renderTable(); closeCaseModal();
