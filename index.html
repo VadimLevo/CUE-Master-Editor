@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>CUE Master Editor v25</title>
+    <title>CUE Master Editor v26</title>
     <style>
         body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #f4f7f9; margin: 0; padding: 20px; color: #333; }
         .container { max-width: 1150px; margin: 0 auto; background: white; padding: 25px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.08); }
@@ -82,7 +82,7 @@
 <div class="container">
     <h2>
         <span>💿 CUE Master Editor</span>
-        <span class="version-badge">v25</span>
+        <span class="version-badge">v26</span>
         <button class="lang-switch" onclick="toggleLang()" id="btnLang">🇷🇺 RU</button>
     </h2>
 
@@ -149,7 +149,7 @@
     </div>
 
     <div class="btn-bar">
-        <input type="file" id="fileInput" class="hidden-file" multiple accept=".cue,.txt,.xml,.m3u,.m3u8,.flac,.wav,.mp3,.ape,.m4a,.ogg">
+        <input type="file" id="fileInput" class="hidden-file" multiple accept=".cue,.txt,.xml,.m3u,.m3u8,.flac,.wav,.mp3,.ape,.m4a,.ogg,.csv">
         <button class="btn-import" onclick="document.getElementById('fileInput').click()" id="btn_import">📂 Импорт</button>
         <button class="btn-create" onclick="addManualTrack()" id="btn_create">➕ Пустой</button>
         <button class="btn-duration" onclick="openDurationModal()" id="btn_duration">⏱ Тайминги</button>
@@ -252,7 +252,7 @@
         ru: {
             lbl_perf: "ИСПОЛНИТЕЛЬ АЛЬБОМА (Performer):", lbl_genre: "ЖАНР (Genre):", lbl_title: "НАЗВАНИЕ АЛЬБОМА (Title):", lbl_date: "ГОД (Date):", lbl_file_glob: "ОБЩИЙ АУДИОФАЙЛ (File):", lbl_comment: "КОММЕНТАРИЙ (Comment):",
             th_file: "Имя файла (File)", th_title: "Название трека (Title)", th_perf: "Исполнитель (Performer)", th_idx: "Индекс", th_act: "Действия",
-            txt_empty_title: "Перетащите файлы в любое место окна", txt_empty_sub: "CUE, TXT, XML, M3U, FLAC, WAV, MP3",
+            txt_empty_title: "Перетащите файлы в любое место окна", txt_empty_sub: "CUE, TXT, XML, M3U, FLAC, WAV, MP3, CSV",
             btn_import: "📂 Импорт", btn_create: "➕ Пустой", btn_duration: "⏱ Тайминги", btn_split: "✂️ Нарезать", btn_merge: "🔗 Склеить", btn_setlist: "📝 Сетлист", btn_case: "🔠 Регистр", btn_clear_tracks: "🗑 Очистить треки", btn_clear_all: "💥 Очистить всё", btn_save: "💾 СОХРАНИТЬ",
             ph_perf: "Исполнитель", new_track: "Новый трек", ins_track: "Вставленный трек", alert_empty: "Добавьте хотя бы один трек!", 
             confirm_clear: "Очистить вообще всё (треки и теги)?", confirm_clear_tracks: "Очистить только список треков?",
@@ -272,7 +272,7 @@
         en: {
             lbl_perf: "ALBUM PERFORMER:", lbl_genre: "GENRE:", lbl_title: "ALBUM TITLE:", lbl_date: "YEAR (Date):", lbl_file_glob: "GLOBAL AUDIO FILE:", lbl_comment: "COMMENT:",
             th_file: "File Name", th_title: "Track Title", th_perf: "Performer", th_idx: "Index", th_act: "Actions",
-            txt_empty_title: "Drop files anywhere in the window", txt_empty_sub: "CUE, TXT, XML, M3U, FLAC, WAV, MP3",
+            txt_empty_title: "Drop files anywhere in the window", txt_empty_sub: "CUE, TXT, XML, M3U, FLAC, WAV, MP3, CSV",
             btn_import: "📂 Import", btn_create: "➕ Empty", btn_duration: "⏱ Timings", btn_split: "✂️ Split", btn_merge: "🔗 Merge", btn_setlist: "📝 Setlist", btn_case: "🔠 Case", btn_clear_tracks: "🗑 Clear Tracks", btn_clear_all: "💥 Clear All", btn_save: "💾 SAVE CUE",
             ph_perf: "Performer", new_track: "New Track", ins_track: "Inserted Track", alert_empty: "Add at least one track!", 
             confirm_clear: "Clear everything (tracks and tags)?", confirm_clear_tracks: "Clear track list only?",
@@ -370,13 +370,22 @@
         const fileArray = Array.from(files).sort((a, b) => a.name.localeCompare(b.name, undefined, {numeric: true, sensitivity: 'base'}));
         for (let file of fileArray) {
             const ext = file.name.split('.').pop().toLowerCase();
-            if (['cue', 'txt'].includes(ext)) {
+            if (['cue', 'txt', 'csv'].includes(ext)) {
                 const text = await readAutoEncoded(file);
-                if (text.includes('Cue Sheet') || text.includes('Track Index In') || text.includes('UPC/MCN')) {
+                // 1. Детекция Adobe Audition (маркеры)
+                if (text.includes('Time Format') && text.includes('Start') && text.includes('Duration')) {
+                    parseAdobeAuditionMarkers(text, file.name);
+                }
+                // 2. Детекция CD Architect
+                else if (text.includes('Cue Sheet') || text.includes('Track Index In') || text.includes('UPC/MCN')) {
                     parseCDArchitectCue(text, file.name);
-                } else if (text.includes('Marker file version') || /^[^\t\r\n]+\t+\d{2}:\d{2}:\d{2}/m.test(text)) {
+                }
+                // 3. Детекция экспорта маркеров iZotope RX
+                else if (text.includes('Marker file version') || /^[^\t\r\n]+\t+\d{2}:\d{2}:\d{2}/m.test(text)) {
                     parseRX11Markers(text, file.name);
-                } else {
+                } 
+                // 4. Стандартный CUE / Текст
+                else {
                     parseCue(text);
                 }
             } else if (['m3u', 'm3u8'].includes(ext)) {
@@ -422,6 +431,73 @@
         } catch(e) { 
             return new TextDecoder("windows-1251").decode(buffer); 
         }
+    }
+
+    // --- ПАРСЕР МАРКЕРОВ ADOBE AUDITION ---
+    function parseAdobeAuditionMarkers(text, sourceFilename) {
+        const lines = text.split(/\r?\n/);
+        let parsedMarkers = [];
+        let globalFile = document.getElementById('g_filename').value.trim();
+        let fallbackFile = globalFile ? globalFile : (tracks.length > 0 ? tracks[tracks.length - 1].filename : sourceFilename.replace(/\.(txt|csv)$/i, '.wav'));
+
+        if (tracks.length === 1 && tracks[0].index === "00:00:00" && tracks[0].title === t('new_track')) { 
+            tracks = []; 
+        }
+
+        lines.forEach(line => {
+            if (!line.trim() || line.startsWith('Name\tStart')) return;
+            const parts = line.split('\t');
+            if (parts.length >= 2) {
+                let name = parts[0].trim();
+                let timeStr = parts[1].trim(); // формат типа MM:SS.mmm или HH:MM:SS.mmm
+                
+                let totalSec = parseAdobeTime(timeStr);
+                parsedMarkers.push({
+                    name: name,
+                    sec: totalSec
+                });
+            }
+        });
+
+        if (parsedMarkers.length === 0) return;
+
+        // Сортируем маркеры по времени по возрастанию (так как Audition экспортирует их задом наперед)
+        parsedMarkers.sort((a, b) => a.sec - b.sec);
+
+        let finalTracks = [];
+        parsedMarkers.forEach(m => {
+            finalTracks.push({
+                filename: fallbackFile,
+                title: m.name,
+                performer: "",
+                index: formatTimeCUE(m.sec),
+                durationSec: 0
+            });
+        });
+
+        // Если первый маркер не на 00:00:00, добавляем служебный Track 01 в начало
+        if (finalTracks.length > 0 && parseMMSS_Frames(finalTracks[0].index) > 0.1) {
+            finalTracks.unshift({
+                filename: fallbackFile,
+                title: "Track 01",
+                performer: "",
+                index: "00:00:00",
+                durationSec: 0
+            });
+        }
+
+        tracks = tracks.concat(finalTracks);
+    }
+
+    function parseAdobeTime(timeStr) {
+        // Поддерживает формат MM:SS.mmm или HH:MM:SS.mmm
+        const parts = timeStr.split(':').map(Number);
+        if (parts.length === 3) {
+            return parts[0] * 3600 + parts[1] * 60 + parts[2];
+        } else if (parts.length === 2) {
+            return parts[0] * 60 + parts[1];
+        }
+        return 0;
     }
 
     function parseCDArchitectCue(text, sourceFilename) {
@@ -641,7 +717,6 @@
     function openCaseModal() { document.getElementById('caseModal').style.display = 'flex'; }
     function closeCaseModal() { document.getElementById('caseModal').style.display = 'none'; }
     
-    // --- ИСПРАВЛЕННАЯ ЛОГИКА РЕГИСТРА С ЗАЩИТОЙ ОТ 's ---
     function applyCase(mode) {
         if(tracks.length === 0) return closeCaseModal();
         const stopWords = new Set(['a', 'an', 'the', 'and', 'but', 'or', 'for', 'nor', 'on', 'at', 'to', 'from', 'by', 'in', 'of', 'в', 'на', 'с', 'со', 'от', 'к', 'и', 'а', 'но', 'да', 'или', 'за', 'по', 'о', 'об', 'из', 'под', 'над', 'до', 'для']);
@@ -822,7 +897,6 @@
         document.body.appendChild(a); a.click(); document.body.removeChild(a);
     }
     
-    // Инициализация при загрузке
     loadGenresFromCache();
     toggleLang(); toggleLang(); 
 </script>
